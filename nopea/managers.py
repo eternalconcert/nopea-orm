@@ -9,7 +9,7 @@ def check_fieldnames(func):
     def wrapper(*args, **kwargs):
         for field in kwargs.keys():
             field = field.split('__')[0]
-            if not field in args[0].base.fieldnames:
+            if field not in args[0].base.fieldnames:
                 raise UnknownFieldError(f"Table {args[0].base.tablename} has no field {field}")
         return func(*args, **kwargs)
     return wrapper

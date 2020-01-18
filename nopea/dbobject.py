@@ -111,8 +111,8 @@ class DbObject(metaclass=MetaType):
     def to_dict(self):
         result = {}
         for name in self.fieldnames:
-         field = getattr(self, name)
-         if isinstance(field, DbObject):
-             field = field.to_dict()
-         result[name] = field
+            field = getattr(self, name)
+            if isinstance(field, DbObject):
+                field = field.to_dict()
+            result[name] = field
         return result
