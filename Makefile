@@ -1,7 +1,7 @@
 #!/usr/bin/make
 
 pythonenv:
-	python3 -m venv pythonenv
+	virtualenv --python=python3 pythonenv
 	pythonenv/bin/pip install mysqlclient==1.3.10 colorama==0.3.9 ipython==6.4.0
 
 test: pythonenv
@@ -17,4 +17,4 @@ upload:
 clean:
 	rm -rf python*
 
-PHONY: test clean
+PHONY: test clean pythonenv
