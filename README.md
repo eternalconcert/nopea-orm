@@ -1,4 +1,4 @@
-# nopea
+# Nopea
 (Version 0.5.1)
 
 ---
@@ -7,7 +7,7 @@ Provides an ORM for SQLite and MySQL.
 
 ## Usage
 
-To use the power of nopea you need to set up an adaptor and let your classed inherit from nopea.DbObject.
+To use the power of Nopea you need to set up an adaptor and let your classed inherit from nopea.DbObject.
 
 ### Setting up Adaptor and Connection
 ```python
@@ -106,7 +106,7 @@ DbObject.raw(
 ```
 
 # License
-nopea is available under the terms of the GPLv3.
+Nopea is available under the terms of the GPLv3.
 
 
 # Disclaimer
