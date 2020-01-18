@@ -11,6 +11,7 @@ class QuerySet:
     def __init__(self, base):
         self.base = base
         self.adaptor = self.base.adaptor
+        self.query = ''
         self.partials = {
             'filters': [],
             'excludes': [],
@@ -51,26 +52,46 @@ class QuerySet:
 
         return objects
 
+    def _make_all_query(self):
+        if self.partials['all']:
+            self.query = self.adaptor.get_select_query(self.base)
+
+    def _make_where_clause(self):
+        if self.partials['filters'] or self.partials['excludes']:
+            self.query = self.adaptor.get_select_query(self.base) + ' WHERE '
+
+    def _make_deltions(self):
+        if self.partials['delete']:
+            self.query = self.adaptor.get_delete_query(self.base)
+            if self.partials['filters']:
+                self.query += 'WHERE '
+
+    def _make_orders(self):
+        if self.partials['orders']:
+            self.query += ' ORDER BY '
+            orders = []
+            for order_partial in self.partials['orders']:
+                direction = 'DESC' if order_partial[0].startswith('-') else 'ASC'
+                orders.append('%s %s' % (order_partial[0].replace('-', ''), direction))
+            self.query += ', '.join(orders)
+
+    def _make_limits(self):
+        if self.partials['limit']:
+            self.query += self.adaptor.get_limit_query(self.partials['limit'])
+
     def compile_query(self) -> tuple:
-        query = ''
         query_args = []
 
-        if self.partials['all']:
-            query = self.adaptor.get_select_query(self.base)
-
-        if self.partials['filters'] or self.partials['excludes']:
-            query = self.adaptor.get_select_query(self.base) + ' WHERE '
+        self._make_all_query()
+        self._make_where_clause()
 
         if self.partials['updates']:
-            query, update_args = self.adaptor.get_update_query(self.base, self.partials['updates'][0])
+            self.query, update_args = self.adaptor.get_update_query(self.base, self.partials['updates'][0])
             query_args.extend(update_args)
             if self.partials['filters']:
-                query += 'WHERE '
+                self.query += 'WHERE '
 
-        if self.partials['delete']:
-            query = self.adaptor.get_delete_query(self.base)
-            if self.partials['filters']:
-                query += 'WHERE '
+        self._make_deltions()
 
         if self.partials['filters']:
             filters = []
@@ -81,9 +102,9 @@ class QuerySet:
                     query_args.extend(filter_args)
                 else:
                     query_args.append(filter_args)
-            query += ' AND '.join([item for item in filters])
+            self.query += ' AND '.join([item for item in filters])
             if self.partials['excludes']:
-                query += ' AND '
+                self.query += ' AND '
 
         if self.partials['excludes']:
             excludes = []
@@ -94,20 +115,12 @@ class QuerySet:
                     query_args.extend(exclude_args)
                 else:
                     query_args.append(exclude_args)
-            query += ' AND '.join([item for item in excludes])
+            self.query += ' AND '.join([item for item in excludes])
 
-        if self.partials['orders']:
-            query += ' ORDER BY '
-            orders = []
-            for order_partial in self.partials['orders']:
-                direction = 'DESC' if order_partial[0].startswith('-') else 'ASC'
-                orders.append('%s %s' % (order_partial[0].replace('-', ''), direction))
-            query += ', '.join(orders)
+        self._make_orders()
+        self._make_limits()
 
-        if self.partials['limit']:
-            query += self.adaptor.get_limit_query(self.partials['limit'])
-
-        return (query, query_args)
+        return (self.query, query_args)
 
     def execute_sql(self):
         query, query_args = self.compile_query()
