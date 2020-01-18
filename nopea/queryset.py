@@ -12,6 +12,7 @@ class QuerySet:
         self.base = base
         self.adaptor = self.base.adaptor
         self.query = ''
+        self.query_args = []
         self.partials = {
             'filters': [],
             'excludes': [],
@@ -60,11 +61,44 @@ class QuerySet:
         if self.partials['filters'] or self.partials['excludes']:
             self.query = self.adaptor.get_select_query(self.base) + ' WHERE '
 
-    def _make_deltions(self):
+    def _make_updates(self):
+        if self.partials['updates']:
+            self.query, update_args = self.adaptor.get_update_query(self.base, self.partials['updates'][0])
+            self.query_args.extend(update_args)
+            if self.partials['filters']:
+                self.query += 'WHERE '
+
+    def _make_deletions(self):
         if self.partials['delete']:
             self.query = self.adaptor.get_delete_query(self.base)
             if self.partials['filters']:
                 self.query += 'WHERE '
+
+    def _make_filters(self):
+        if self.partials['filters']:
+            filters = []
+            for filter_partial in self.partials['filters']:
+                filter_query, filter_args = self.adaptor.get_filter_query(filter_partial)
+                filters.append(filter_query)
+                if isinstance(filter_args, list):
+                    self.query_args.extend(filter_args)
+                else:
+                    self.query_args.append(filter_args)
+            self.query += ' AND '.join([item for item in filters])
+            if self.partials['excludes']:
+                self.query += ' AND '
+
+    def _make_excludes(self):
+        if self.partials['excludes']:
+            excludes = []
+            for exclude_partial in self.partials['excludes']:
+                exclude_query, exclude_args = self.adaptor.get_exclude_query(exclude_partial)
+                excludes.append(exclude_query)
+                if isinstance(exclude_args, list):
+                    self.query_args.extend(exclude_args)
+                else:
+                    self.query_args.append(exclude_args)
+            self.query += ' AND '.join([item for item in excludes])
 
     def _make_orders(self):
         if self.partials['orders']:
@@ -80,47 +114,18 @@ class QuerySet:
             self.query += self.adaptor.get_limit_query(self.partials['limit'])
 
     def compile_query(self) -> tuple:
-        query_args = []
+        self.query_args = []
 
         self._make_all_query()
         self._make_where_clause()
-
-        if self.partials['updates']:
-            self.query, update_args = self.adaptor.get_update_query(self.base, self.partials['updates'][0])
-            query_args.extend(update_args)
-            if self.partials['filters']:
-                self.query += 'WHERE '
-
-        self._make_deltions()
-
-        if self.partials['filters']:
-            filters = []
-            for filter_partial in self.partials['filters']:
-                filter_query, filter_args = self.adaptor.get_filter_query(filter_partial)
-                filters.append(filter_query)
-                if isinstance(filter_args, list):
-                    query_args.extend(filter_args)
-                else:
-                    query_args.append(filter_args)
-            self.query += ' AND '.join([item for item in filters])
-            if self.partials['excludes']:
-                self.query += ' AND '
-
-        if self.partials['excludes']:
-            excludes = []
-            for exclude_partial in self.partials['excludes']:
-                exclude_query, exclude_args = self.adaptor.get_exclude_query(exclude_partial)
-                excludes.append(exclude_query)
-                if isinstance(exclude_args, list):
-                    query_args.extend(exclude_args)
-                else:
-                    query_args.append(exclude_args)
-            self.query += ' AND '.join([item for item in excludes])
-
+        self._make_updates()
+        self._make_deletions()
+        self._make_filters()
+        self._make_excludes()
         self._make_orders()
         self._make_limits()
 
-        return (self.query, query_args)
+        return (self.query, self.query_args)
 
     def execute_sql(self):
         query, query_args = self.compile_query()
