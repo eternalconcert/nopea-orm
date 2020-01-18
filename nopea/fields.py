@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-from myorm.exceptions import MaxLengthError
-from myorm.managers import RelatedManager
+from nopea.exceptions import MaxLengthError
+from nopea.managers import RelatedManager
 
 
 class DbField(object):

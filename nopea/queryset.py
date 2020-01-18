@@ -3,7 +3,7 @@
 
 from copy import copy
 
-from myorm.exceptions import TooManyResultsError
+from nopea.exceptions import TooManyResultsError
 
 
 class QuerySet:

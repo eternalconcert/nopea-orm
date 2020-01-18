@@ -7,15 +7,15 @@ import shutil
 import tempfile
 import unittest
 
-from myorm.dbobject import DbObject
-from myorm.exceptions import MaxLengthError, TooManyResultsError, UnknownFieldError
-from myorm.fields import BooleanField, CharField, DateTimeField, ForeignKey, IntegerField, TextField
-from myorm.adaptors.sqlite import TestAdaptor
-from myorm.migrations import Migration
+from nopea.dbobject import DbObject
+from nopea.exceptions import MaxLengthError, TooManyResultsError, UnknownFieldError
+from nopea.fields import BooleanField, CharField, DateTimeField, ForeignKey, IntegerField, TextField
+from nopea.adaptors.sqlite import TestAdaptor
+from nopea.migrations import Migration
 
-# from myorm.adaptors.mysql import MySQLAdaptor
+# from nopea.adaptors.mysql import MySQLAdaptor
 # DbObject.adaptor = MySQLAdaptor(
-#     {'host': 'localhost', 'user': 'myorm', 'db': 'myorm', 'use_unicode': True, 'charset': 'utf8'}
+#     {'host': 'localhost', 'user': 'nopea', 'db': 'nopea', 'use_unicode': True, 'charset': 'utf8'}
 # )
 
 DbObject.adaptor = TestAdaptor()

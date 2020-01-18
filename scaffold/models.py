@@ -1,5 +1,5 @@
 # This file contains example model definitions.
-from myorm import fields
+from nopea import fields
 from app import DbObject
 
 

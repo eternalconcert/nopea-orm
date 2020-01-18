@@ -1,11 +1,11 @@
 __pycache__/
 test.db
-myorm.db
+nopea.db
 *.pyc
 dist/*
-myorm.egg*
+nopea.egg*
 pythonenv
 .vscode/settings.json
 build/
 dist/
-myorm.egg-info/
+nopea.egg-info/

@@ -1,4 +1,4 @@
-# myorm
+# nopea
 (Version 0.5.1)
 
 ---
@@ -7,29 +7,29 @@ Provides an ORM for SQLite and MySQL.
 
 ## Usage
 
-To use the power of myorm you need to set up an adaptor and let your classed inherit from myorm.DbObject.
+To use the power of nopea you need to set up an adaptor and let your classed inherit from nopea.DbObject.
 
 ### Setting up Adaptor and Connection
 ```python
-from myorm.dbobject import DbObject
-from myorm.adaptors.sqlite import SQLiteAdaptor
+from nopea.dbobject import DbObject
+from nopea.adaptors.sqlite import SQLiteAdaptor
 
 DbObject = DbObject
-DbObject.adaptor = SQLiteAdaptor('myorm.db')
+DbObject.adaptor = SQLiteAdaptor('nopea.db')
 ```
 
 ### Creating a subclass
 ```python
 class User(DbObject):
-    name = myorm.CharField(max_length=25)
-    password = myorm.CharField(max_length=50)
-    describtion = myorm.TextField()
-    registered = myorm.DateField()
-    logins = myorm.IntegerField()
-    active = myorm.BooleanField(default=True)
+    name = nopea.CharField(max_length=25)
+    password = nopea.CharField(max_length=50)
+    describtion = nopea.TextField()
+    registered = nopea.DateField()
+    logins = nopea.IntegerField()
+    active = nopea.BooleanField(default=True)
 ```
 
-> Users automatically get an additional id field which is an instance of `myorm.fields.PkField`.
+> Users automatically get an additional id field which is an instance of `nopea.fields.PkField`.
 
 ### Instance methods:
 ```python
@@ -101,12 +101,12 @@ DbObject.raw(query, args)
 
 DbObject.raw(
     "INSERT INTO user (name, description)
-     VALUES (?, ?)", 'Christian', 'myorm developer.'
+     VALUES (?, ?)", 'Christian', 'Nopea developer.'
     )
 ```
 
 # License
-myorm is available under the terms of the GPLv3.
+nopea is available under the terms of the GPLv3.
 
 
 # Disclaimer

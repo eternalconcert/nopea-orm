@@ -1,19 +1,19 @@
 # This file is needed to initialize the models and migrations
 import os
-from myorm.dbobject import DbObject
-from myorm.adaptors.sqlite import SQLiteAdaptor
-from myorm.migrations import Migration
+from nopea.dbobject import DbObject
+from nopea.adaptors.sqlite import SQLiteAdaptor
+from nopea.migrations import Migration
 
 from models import *
 
-DbObject.adaptor = SQLiteAdaptor('myorm.db')
+DbObject.adaptor = SQLiteAdaptor('nopea.db')
 
 # Examples for other DBMS
 
 # MySQL
-# from myorm.adaptors.mysql import MySQLAdaptor
+# from nopea.adaptors.mysql import MySQLAdaptor
 # DbObject.adaptor = MySQLAdaptor(
-#     {'host': 'localhost', 'user': 'myorm', 'db': 'myorm', 'use_unicode': True, 'charset': 'utf8'}
+#     {'host': 'localhost', 'user': 'nopea', 'db': 'nopea', 'use_unicode': True, 'charset': 'utf8'}
 # )
 
 Migration.migration_dir = os.path.join(os.getcwd(), 'migrations')

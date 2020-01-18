@@ -6,4 +6,4 @@
 import IPython
 from models import *
 
-IPython.embed(header="Welcome to the myorm shell!")
+IPython.embed(header="Welcome to the Nopea shell!")

@@ -6,7 +6,7 @@ pythonenv:
 
 test: pythonenv
 	@echo "### Running Python tests ###"
-	pythonenv/bin/python -m myorm.tests
+	pythonenv/bin/python -m nopea.tests
 
 package:
 	pythonenv/bin/python setup.py sdist bdist_wheel

@@ -1,17 +1,17 @@
 # coding: utf-8
 from setuptools import setup
 
-with open('README.rst') as f:
+with open('README.md') as f:
     long_description = f.read()
 
 setupargs = {
-    'name': 'myorm',
+    'name': 'nopea',
     'description': 'Provides a simple ORM for MySQL, PostgreSQL and SQLite.',
 
     'license': 'GPLv3',
     'version': '0.5.1',
 
-    'packages': ['myorm', 'myorm.adaptors'],
+    'packages': ['nopea', 'nopea.adaptors'],
     'long_description': long_description,
     'long_description_content_type': 'text/x-rst',
 

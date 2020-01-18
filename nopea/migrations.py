@@ -10,8 +10,8 @@ from pprint import pformat
 
 from datetime import datetime
 
-from myorm.dbobject import DbObject
-from myorm.fields import BooleanField, CharField, DateTimeField, ForeignKey, IntegerField, PkField, TextField
+from nopea.dbobject import DbObject
+from nopea.fields import BooleanField, CharField, DateTimeField, ForeignKey, IntegerField, PkField, TextField
 
 field_types = [BooleanField, CharField, DateTimeField, ForeignKey, IntegerField, PkField, TextField]
 field_dict = {field.__name__: field for field in field_types}
@@ -21,7 +21,7 @@ class Migration:
     migration_dir = None
 
     def __init__(self):
-        self.tablename = 'myorm_migrations'
+        self.tablename = 'nopea_migrations'
         self.adaptor = DbObject.adaptor
         self.managed_models = DbObject.managed_models
         self.ref_models = {model.__name__: model for model in self.managed_models}

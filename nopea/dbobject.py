@@ -1,9 +1,9 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-from myorm.fields import DbField, ForeignKey, PkField
-from myorm.managers import Manager
-from myorm.queryset import QuerySet
+from nopea.fields import DbField, ForeignKey, PkField
+from nopea.managers import Manager
+from nopea.queryset import QuerySet
 
 
 class MetaType(type):

@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-from myorm.queryset import QuerySet
-from myorm.exceptions import TooManyResultsError, UnknownFieldError
+from nopea.queryset import QuerySet
+from nopea.exceptions import TooManyResultsError, UnknownFieldError
 
 
 def check_fieldnames(func):
