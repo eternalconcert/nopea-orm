@@ -17,7 +17,11 @@ setupargs = {
 
     'author': 'Christian Kokoska',
     'author_email': 'christian@eternalconcert.de',
-    'install_requires': [],
+    'install_requires': [
+        'mysqlclient==1.3.10',
+        'colorama==0.3.9',
+        'ipython==6.4.0'
+    ],
 }
 
 if __name__ == '__main__':

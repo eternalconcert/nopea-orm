@@ -2,7 +2,7 @@
 
 pythonenv:
 	virtualenv --python=python3 pythonenv
-	pythonenv/bin/pip install mysqlclient==1.3.10 colorama==0.3.9 ipython==6.4.0
+	pythonenv/bin/pip install -r requirements.txt
 
 test: pythonenv
 	@echo "### Running Python tests ###"
