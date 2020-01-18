@@ -1,0 +1,11 @@
+__pycache__/
+test.db
+myorm.db
+*.pyc
+dist/*
+myorm.egg*
+pythonenv
+.vscode/settings.json
+build/
+dist/
+myorm.egg-info/
