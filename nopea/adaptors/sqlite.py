@@ -55,6 +55,10 @@ class SQLiteAdaptor(object):
         elif key.endswith('__contains'):
             query = '%s LIKE %s' % (key.replace('__contains', ''), '?')
             value = '%' + value + '%'
+        elif key.endswith('__startswith'):
+            query = '%s LIKE %s || "%%"' % (key.replace('__startswith', ''), '?')
+        elif key.endswith('__endswith'):
+            query = '%s LIKE "%%" || %s' % (key.replace('__endswith', ''), '?')
         else:
             if value is not None:
                 query = '%s=?' % key
@@ -75,6 +79,10 @@ class SQLiteAdaptor(object):
             query = '%s <= %s' % (key.replace('__gt', ''), '?')
         elif key.endswith('__gte'):
             query = '%s < %s' % (key.replace('__gte', ''), '?')
+        elif key.endswith('__startswith'):
+            query = '%s NOT LIKE %s || "%%"' % (key.replace('__startswith', ''), '?')
+        elif key.endswith('__endswith'):
+            query = '%s NOT LIKE "%%" || %s' % (key.replace('__endswith', ''), '?')
         else:
             if value is not None:
                 query = '%s <> ?' % key

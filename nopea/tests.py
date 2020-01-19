@@ -13,9 +13,15 @@ from nopea.fields import BooleanField, CharField, DateTimeField, ForeignKey, Int
 from nopea.adaptors.sqlite import TestAdaptor
 from nopea.migrations import Migration
 
-# from nopea.adaptors.mysql import MySQLAdaptor
+from nopea.adaptors.mysql import MySQLAdaptor
 # DbObject.adaptor = MySQLAdaptor(
-#     {'host': 'localhost', 'user': 'nopea', 'db': 'nopea', 'use_unicode': True, 'charset': 'utf8'}
+#     {
+#         'host': 'localhost',
+#         'user': 'nopea',
+#         'db': 'nopea',
+#         'use_unicode': True,
+#         'charset': 'utf8'
+#     }
 # )
 
 DbObject.adaptor = TestAdaptor()
@@ -132,6 +138,76 @@ class TestMethods(unittest.TestCase):
 
         # Combined limit filters
         self.assertEqual(len(Car.objects.filter(seats__lte=3, wheels__gt=3)), 2)
+
+    def test_contains_filter(self):
+        cars = Car.objects.filter(manufacturer__contains="Mercedes")
+        self.assertEqual(len(cars), 1)
+
+    def test_contains_filter_negative(self):
+        cars = Car.objects.filter(manufacturer__contains="VW")
+        self.assertEqual(len(cars), 0)
+
+    def test_contains_filter_multiple(self):
+        cars = Car.objects.filter(manufacturer__contains="m")
+        self.assertEqual(len(cars), 2)
+
+    def test_startswith_filter(self):
+        cars = Car.objects.filter(manufacturer__startswith="Por")
+        self.assertEqual(len(cars), 1)
+
+    def test_startswith_filter_negative(self):
+        cars = Car.objects.filter(manufacturer__startswith="V")
+        self.assertEqual(len(cars), 0)
+
+    def test_startswith_filter_multiple(self):
+        Car.objects.create(manufacturer="Political Correct Cars")
+        cars = Car.objects.filter(manufacturer__startswith="Po")
+        self.assertEqual(len(cars), 2)
+
+    def test_startswith_filter_chained(self):
+        cars = Car.objects.filter(manufacturer__startswith="Po").filter(manufacturer__startswith="B")
+        self.assertEqual(len(cars), 0)
+
+    def test_startswith_exclude(self):
+        cars = Car.objects.exclude(manufacturer__startswith="Po")
+        self.assertEqual(len(cars), 3)
+
+    def test_startswith_exclude_negative(self):
+        cars = Car.objects.exclude(manufacturer__startswith="V")
+        self.assertEqual(len(cars), 4)
+
+    def test_startswith_exclude_chained(self):
+        cars = Car.objects.exclude(manufacturer__startswith="Po").exclude(manufacturer__startswith="B")
+        self.assertEqual(len(cars), 2)
+
+    def test_endswith_filter(self):
+        cars = Car.objects.filter(manufacturer__endswith="sche")
+        self.assertEqual(len(cars), 1)
+
+    def test_endswith_filter_negative(self):
+        cars = Car.objects.filter(manufacturer__endswith="R")
+        self.assertEqual(len(cars), 0)
+
+    def test_endswith_filter_multiple(self):
+        Car.objects.create(manufacturer="VW")
+        cars = Car.objects.filter(manufacturer__endswith="w")
+        self.assertEqual(len(cars), 2)
+
+    def test_endswith_filter_chained(self):
+        cars = Car.objects.filter(manufacturer__endswith="sche").filter(manufacturer__endswith="W")
+        self.assertEqual(len(cars), 0)
+
+    def test_endswith_exclude(self):
+        cars = Car.objects.exclude(manufacturer__endswith="sche")
+        self.assertEqual(len(cars), 3)
+
+    def test_endswith_exclude_negative(self):
+        cars = Car.objects.exclude(manufacturer__endswith="r")
+        self.assertEqual(len(cars), 4)
+
+    def test_endswith_exclude_chained(self):
+        cars = Car.objects.exclude(manufacturer__endswith="sche").exclude(manufacturer__endswith="w")
+        self.assertEqual(len(cars), 2)
 
     def test_order_by_filters(self):
         """ Tests the order_by filter """
