@@ -13,7 +13,7 @@ from nopea.fields import BooleanField, CharField, DateTimeField, ForeignKey, Int
 from nopea.adaptors.sqlite import TestAdaptor
 from nopea.migrations import Migration
 
-from nopea.adaptors.mysql import MySQLAdaptor
+# from nopea.adaptors.mysql import MySQLAdaptor
 # DbObject.adaptor = MySQLAdaptor(
 #     {
 #         'host': 'localhost',
