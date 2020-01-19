@@ -9,7 +9,7 @@ setupargs = {
     'description': 'Provides a simple ORM for MySQL, PostgreSQL and SQLite.',
 
     'license': 'GPLv3',
-    'version': '0.5.1',
+    'version': '0.0.1',
 
     'packages': ['nopea', 'nopea.adaptors'],
     'long_description': long_description,
@@ -18,7 +18,6 @@ setupargs = {
     'author': 'Christian Kokoska',
     'author_email': 'christian@eternalconcert.de',
     'install_requires': [
-        'mysqlclient==1.3.10',
         'colorama==0.3.9',
         'ipython==6.4.0'
     ],
