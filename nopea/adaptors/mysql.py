@@ -16,6 +16,8 @@ class IsNull:
 
 class MySQLAdaptor(object):
 
+    PLACEHOLDER = '%s'
+
     def __init__(self, database_settings):
         self.database_settings = database_settings
 
@@ -55,6 +57,12 @@ class MySQLAdaptor(object):
         elif key.endswith('__contains'):
             query = '%s LIKE %s' % (key.replace('__contains', ''), '%s')
             value = '%' + value + '%'
+        elif key.endswith('__startswith'):
+            query = '%s LIKE %s' % (key.replace('__startswith', ''), '%s')
+            value = value + '%'
+        elif key.endswith('__endswith'):
+            query = '%s LIKE %s' % (key.replace('__endswith', ''), '%s')
+            value = '%' + value
         else:
             if value is not None:
                 query = '%s=%%s' % key
@@ -75,6 +83,12 @@ class MySQLAdaptor(object):
             query = '%s <= %s' % (key.replace('__gt', ''), '%s')
         elif key.endswith('__gte'):
             query = '%s < %s' % (key.replace('__gte', ''), '%s')
+        elif key.endswith('__startswith'):
+            query = '%s NOT LIKE %s' % (key.replace('__startswith', ''), '%s')
+            value = value + '%'
+        elif key.endswith('__endswith'):
+            query = '%s NOT LIKE %s' % (key.replace('__endswith', ''), '%s')
+            value = '%' + value
         else:
             if value is not None:
                 query = '%s <> %%s' % key

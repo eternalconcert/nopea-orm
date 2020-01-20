@@ -16,6 +16,8 @@ class IsNull:
 
 class SQLiteAdaptor(object):
 
+    PLACEHOLDER = '?'
+
     def __init__(self, database):
         self.database = database
 
@@ -270,21 +272,3 @@ class SQLiteAdaptor(object):
     def insert_migration(self, name):
         query = "INSERT INTO nopea_migrations (name) VALUES (?)"
         return self.execute_query(query, (name,))
-
-
-class TestCon(sqlite3.Connection):
-
-    def __init__(self, database):
-        super(TestCon, self).__init__(database)
-
-    def close(self):
-        pass
-
-
-class TestAdaptor(SQLiteAdaptor):
-
-    def __init__(self, database=':memory:'):
-        self.connection = TestCon(database)
-
-    def get_connection_and_cursor(self):
-        return self.connection, self.connection.cursor()

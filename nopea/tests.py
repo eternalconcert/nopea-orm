@@ -4,14 +4,38 @@
 from datetime import datetime
 import os
 import shutil
+import sqlite3
 import tempfile
 import unittest
 
 from nopea.dbobject import DbObject
 from nopea.exceptions import MaxLengthError, TooManyResultsError, UnknownFieldError
 from nopea.fields import BooleanField, CharField, DateTimeField, ForeignKey, IntegerField, TextField
-from nopea.adaptors.sqlite import TestAdaptor
+from nopea.adaptors.sqlite import SQLiteAdaptor
 from nopea.migrations import Migration
+
+
+class TestCon(sqlite3.Connection):
+
+    def __init__(self, database):
+        super(TestCon, self).__init__(database)
+
+    def close(self):
+        pass
+
+
+class TestAdaptor(SQLiteAdaptor):
+
+    def __init__(self, database=':memory:'):
+        self.connection = TestCon(database)
+
+    def get_connection_and_cursor(self):
+        return self.connection, self.connection.cursor()
+
+
+
+DbObject.adaptor = TestAdaptor()
+
 
 # from nopea.adaptors.mysql import MySQLAdaptor
 # DbObject.adaptor = MySQLAdaptor(
@@ -24,7 +48,6 @@ from nopea.migrations import Migration
 #     }
 # )
 
-DbObject.adaptor = TestAdaptor()
 
 print("# Running tests with %s" % DbObject.adaptor.__class__.__name__)
 
@@ -259,14 +282,9 @@ class TestMethods(unittest.TestCase):
 
     def test_raw_queries(self):
         """ Tests some raw queries """
-        # if isinstance(DbObject.adaptor, MySQLAdaptor):
-        #     PH = '%s'
-        # elif isinstance(DbObject.adaptor, TestAdaptor):
-        #    PH = '?'
-        PH = '?'
-
         old_len = len(Car.objects.all())
 
+        PH = DbObject.adaptor.PLACEHOLDER  # Differentiate between SQLite and MySQL
         mercedes = DbObject.raw("SELECT id FROM car WHERE manufacturer={0}".format(PH), "Mercedes")
         self.assertEqual(len(mercedes), len(Car.objects.filter(manufacturer="Mercedes")))
         self.assertEqual(mercedes[0][0], Car.objects.get(manufacturer="Mercedes").id)
