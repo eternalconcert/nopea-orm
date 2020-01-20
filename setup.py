@@ -6,17 +6,17 @@ with open('README.md') as f:
 
 setupargs = {
     'name': 'nopea',
-    'description': 'Provides a simple ORM for MySQL, PostgreSQL and SQLite.',
+    'description': 'Provides a simple ORM for MySQL and SQLite.',
 
     'license': 'GPLv3',
-    'version': '0.0.1',
+    'version': '0.0.2',
 
     'packages': ['nopea', 'nopea.adaptors'],
     'long_description': long_description,
-    'long_description_content_type': 'text/x-rst',
+    'long_description_content_type': 'text/markdown',
 
     'author': 'Christian Kokoska',
-    'author_email': 'christian@eternalconcert.de',
+    'author_email': 'info@softcreate.de',
     'install_requires': [
         'colorama==0.3.9',
         'ipython==6.4.0'
