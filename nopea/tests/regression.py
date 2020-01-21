@@ -5,6 +5,7 @@ from datetime import datetime
 import os
 import shutil
 import sqlite3
+import sys
 import tempfile
 import unittest
 
@@ -33,26 +34,42 @@ class TestAdaptor(SQLiteAdaptor):
         return self.connection, self.connection.cursor()
 
 
-DbObject.adaptor = TestAdaptor()
+sqlite = TestAdaptor()
 
 
-# from nopea.adaptors.mysql import MySQLAdaptor
-# DbObject.adaptor = MySQLAdaptor({
-#      'host': 'localhost',
-#      'user': 'nopea',
-#      'db': 'nopea',
-#      'use_unicode': True,
-#      'charset': 'utf8'
-# })
+from nopea.adaptors.mysql import MySQLAdaptor
+mysql = MySQLAdaptor({
+  'host': 'localhost',
+  'user': 'nopea',
+  'db': 'nopea',
+  'use_unicode': True,
+  'charset': 'utf8'
+})
 
 
-# from nopea.adaptors.postgres import PostgreSQLAdaptor
-# DbObject.adaptor = PostgreSQLAdaptor({
-#     'host': 'localhost',
-#     'user': 'nopea',
-#     'database': 'nopea',
-#     'password': 'nopea'
-# })
+from nopea.adaptors.postgres import PostgreSQLAdaptor
+postgres = PostgreSQLAdaptor({
+ 'host': 'localhost',
+ 'user': 'nopea',
+ 'database': 'nopea',
+ 'password': 'nopea'
+})
+
+
+adaptors = {
+    'sqlite': sqlite,
+    'mysql': mysql,
+    'postgres': postgres
+}
+
+
+for adaptor_name, adaptor in adaptors.items():
+    if str(adaptor_name) in sys.argv:
+        selected_adaptor = adaptor
+        sys.argv.remove(adaptor_name)
+
+
+DbObject.adaptor = selected_adaptor
 
 
 print("# Running tests with %s" % DbObject.adaptor.__class__.__name__)

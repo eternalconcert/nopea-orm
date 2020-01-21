@@ -26,4 +26,4 @@ jobs:
         flake8 . --count --ignore=F401,F403 --exit-zero --max-complexity=10 --max-line-length=127 --statistics --exclude pythonenv,migrations
     - name: Test with unittest
       run: |
-        python -m nopea.tests
+        python -m nopea.tests.regression sqlite
