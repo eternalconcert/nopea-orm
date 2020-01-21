@@ -33,7 +33,6 @@ class TestAdaptor(SQLiteAdaptor):
         return self.connection, self.connection.cursor()
 
 
-
 DbObject.adaptor = TestAdaptor()
 
 
@@ -47,13 +46,13 @@ DbObject.adaptor = TestAdaptor()
 # })
 
 
-from nopea.adaptors.postgres import PostgreSQLAdaptor
-DbObject.adaptor = PostgreSQLAdaptor({
-    'host': 'localhost',
-    'user': 'nopea',
-    'database': 'nopea',
-    'password': 'nopea'
-})
+# from nopea.adaptors.postgres import PostgreSQLAdaptor
+# DbObject.adaptor = PostgreSQLAdaptor({
+#     'host': 'localhost',
+#     'user': 'nopea',
+#     'database': 'nopea',
+#     'password': 'nopea'
+# })
 
 
 print("# Running tests with %s" % DbObject.adaptor.__class__.__name__)
