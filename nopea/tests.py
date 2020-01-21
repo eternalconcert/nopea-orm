@@ -38,15 +38,22 @@ DbObject.adaptor = TestAdaptor()
 
 
 # from nopea.adaptors.mysql import MySQLAdaptor
-# DbObject.adaptor = MySQLAdaptor(
-#     {
-#         'host': 'localhost',
-#         'user': 'nopea',
-#         'db': 'nopea',
-#         'use_unicode': True,
-#         'charset': 'utf8'
-#     }
-# )
+# DbObject.adaptor = MySQLAdaptor({
+#      'host': 'localhost',
+#      'user': 'nopea',
+#      'db': 'nopea',
+#      'use_unicode': True,
+#      'charset': 'utf8'
+# })
+
+
+from nopea.adaptors.postgres import PostgreSQLAdaptor
+DbObject.adaptor = PostgreSQLAdaptor({
+    'host': 'localhost',
+    'user': 'nopea',
+    'database': 'nopea',
+    'password': 'nopea'
+})
 
 
 print("# Running tests with %s" % DbObject.adaptor.__class__.__name__)
@@ -171,7 +178,7 @@ class TestMethods(unittest.TestCase):
         self.assertEqual(len(cars), 0)
 
     def test_contains_filter_multiple(self):
-        cars = Car.objects.filter(manufacturer__contains="m")
+        cars = Car.objects.filter(manufacturer__contains="M")
         self.assertEqual(len(cars), 2)
 
     def test_startswith_filter(self):
@@ -213,7 +220,7 @@ class TestMethods(unittest.TestCase):
 
     def test_endswith_filter_multiple(self):
         Car.objects.create(manufacturer="VW")
-        cars = Car.objects.filter(manufacturer__endswith="w")
+        cars = Car.objects.filter(manufacturer__endswith="W")
         self.assertEqual(len(cars), 2)
 
     def test_endswith_filter_chained(self):
@@ -229,7 +236,7 @@ class TestMethods(unittest.TestCase):
         self.assertEqual(len(cars), 4)
 
     def test_endswith_exclude_chained(self):
-        cars = Car.objects.exclude(manufacturer__endswith="sche").exclude(manufacturer__endswith="w")
+        cars = Car.objects.exclude(manufacturer__endswith="sche").exclude(manufacturer__endswith="W")
         self.assertEqual(len(cars), 2)
 
     def test_order_by_filters(self):
