@@ -1,9 +1,9 @@
 # Nopea
-(Version 0.0.2)
+(Version 0.0.3)
 
 ---
 ## Purpose
-Provides an ORM for SQLite and MySQL.
+Provides an ORM for MySQL, PostgreSQL and SQLite.
 
 ## Usage
 

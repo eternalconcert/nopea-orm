@@ -12,8 +12,21 @@ DbObject.adaptor = SQLiteAdaptor('nopea.db')
 
 # MySQL
 # from nopea.adaptors.mysql import MySQLAdaptor
-# DbObject.adaptor = MySQLAdaptor(
-#     {'host': 'localhost', 'user': 'nopea', 'db': 'nopea', 'use_unicode': True, 'charset': 'utf8'}
-# )
+# DbObject.adaptor = MySQLAdaptor({
+#     'host': 'localhost',
+#     'user': 'nopea',
+#     'db': 'nopea',
+#     'use_unicode': True,
+#     'charset': 'utf8'
+# })
+
+
+# from nopea.adaptors.postgres import PostgreSQLAdaptor
+# DbObject.adaptor = PostgreSQLAdaptor({
+#     'host': 'localhost',
+#     'user': 'nopea',
+#     'database': 'nopea',
+#     'password': 'nopea'
+# })
 
 Migration.migration_dir = os.path.join(os.getcwd(), 'migrations')

@@ -6,10 +6,10 @@ with open('README.md') as f:
 
 setupargs = {
     'name': 'nopea',
-    'description': 'Provides a simple ORM for MySQL and SQLite.',
+    'description': 'Provides an ORM for MySQL, PostgreSQL and SQLite.',
 
     'license': 'GPLv3',
-    'version': '0.0.2',
+    'version': '0.0.3',
 
     'packages': ['nopea', 'nopea.adaptors'],
     'long_description': long_description,
