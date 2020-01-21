@@ -125,8 +125,8 @@ class PostgreSQLAdaptor(object):
             else:
                 values.append(value)
         query = "INSERT INTO %s (%s) VALUES (%s) RETURNING id" % (base.tablename,
-                                                     ', '.join(fieldnames),
-                                                     ', '.join(['%s' for item in fieldnames]))
+                                                                  ', '.join(fieldnames),
+                                                                  ', '.join(['%s' for item in fieldnames]))
         return (query, tuple(values))
 
     def get_delete_query(self, base):

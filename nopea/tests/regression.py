@@ -41,21 +41,21 @@ if "sqlite" in sys.argv:
 elif "mysql" in sys.argv:
     from nopea.adaptors.mysql import MySQLAdaptor
     selected_adaptor = MySQLAdaptor({
-      'host': 'localhost',
-      'user': 'nopea',
-      'db': 'nopea',
-      'use_unicode': True,
-      'charset': 'utf8'
+        'host': 'localhost',
+        'user': 'nopea',
+        'db': 'nopea',
+        'use_unicode': True,
+        'charset': 'utf8'
     })
     sys.argv.remove("mysql")
 
 elif "postgres" in sys.argv:
     from nopea.adaptors.postgres import PostgreSQLAdaptor
     selected_adaptor = PostgreSQLAdaptor({
-     'host': 'localhost',
-     'user': 'nopea',
-     'database': 'nopea',
-     'password': 'nopea'
+        'host': 'localhost',
+        'user': 'nopea',
+        'database': 'nopea',
+        'password': 'nopea'
     })
     sys.argv.remove("postgres")
 
