@@ -20,5 +20,8 @@ lint:
 
 clean:
 	rm -rf python*
+	rm -rf dist
+	rm -rf build
+	rm -rf nopea.egg.info
 
 PHONY: test clean pythonenv
