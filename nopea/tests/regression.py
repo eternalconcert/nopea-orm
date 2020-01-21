@@ -34,39 +34,30 @@ class TestAdaptor(SQLiteAdaptor):
         return self.connection, self.connection.cursor()
 
 
-sqlite = TestAdaptor()
+if "sqlite" in sys.argv:
+    selected_adaptor = TestAdaptor()
+    sys.argv.remove("sqlite")
 
+elif "mysql" in sys.argv:
+    from nopea.adaptors.mysql import MySQLAdaptor
+    selected_adaptor = MySQLAdaptor({
+      'host': 'localhost',
+      'user': 'nopea',
+      'db': 'nopea',
+      'use_unicode': True,
+      'charset': 'utf8'
+    })
+    sys.argv.remove("mysql")
 
-from nopea.adaptors.mysql import MySQLAdaptor
-mysql = MySQLAdaptor({
-  'host': 'localhost',
-  'user': 'nopea',
-  'db': 'nopea',
-  'use_unicode': True,
-  'charset': 'utf8'
-})
-
-
-from nopea.adaptors.postgres import PostgreSQLAdaptor
-postgres = PostgreSQLAdaptor({
- 'host': 'localhost',
- 'user': 'nopea',
- 'database': 'nopea',
- 'password': 'nopea'
-})
-
-
-adaptors = {
-    'sqlite': sqlite,
-    'mysql': mysql,
-    'postgres': postgres
-}
-
-
-for adaptor_name, adaptor in adaptors.items():
-    if str(adaptor_name) in sys.argv:
-        selected_adaptor = adaptor
-        sys.argv.remove(adaptor_name)
+elif "postgres" in sys.argv:
+    from nopea.adaptors.postgres import PostgreSQLAdaptor
+    selected_adaptor = PostgreSQLAdaptor({
+     'host': 'localhost',
+     'user': 'nopea',
+     'database': 'nopea',
+     'password': 'nopea'
+    })
+    sys.argv.remove("postgres")
 
 
 DbObject.adaptor = selected_adaptor
