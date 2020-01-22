@@ -59,6 +59,13 @@ class Manager:
                 raise IndexError("No %s object found" % self.base.__class__.__name__)
         raise TooManyResultsError('To many results for get(): %s' % len(result))
 
+    @check_fieldnames
+    def get_or_create(self, *args, **kwargs):
+        try:
+            return (False, self.get(*args, **kwargs))
+        except IndexError:
+            return (True, self.create(*args, **kwargs))
+
     def bulk_create(self, objects):
         self.adaptor.bulk_create(objects, self.base)
 

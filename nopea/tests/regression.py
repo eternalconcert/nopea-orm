@@ -153,6 +153,29 @@ class TestMethods(unittest.TestCase):
         with self.assertRaises(TooManyResultsError):
             Car.objects.get(wheels=4)
 
+    def test_get_or_create_get(self):
+        created, car = Car.objects.get_or_create(manufacturer="BMW")
+        self.assertEqual(Car.objects.filter(manufacturer="BMW").count(), 1)
+        self.assertFalse(created)
+
+    def test_get_or_create_create(self):
+        created, car = Car.objects.get_or_create(manufacturer="Tesla")
+        self.assertEqual(Car.objects.filter(manufacturer="Tesla").count(), 1)
+        self.assertTrue(created)
+
+    def test_get_or_create_twice(self):
+        created, car = Car.objects.get_or_create(manufacturer="Tesla")
+        self.assertTrue(created)
+        created, car = Car.objects.get_or_create(manufacturer="Tesla")
+        self.assertFalse(created)
+        self.assertEqual(Car.objects.filter(manufacturer="Tesla").count(), 1)
+
+    def test_get_or_create_multiple_entries_in_db(self):
+        Car.objects.create(manufacturer="Tesla")
+        Car.objects.create(manufacturer="Tesla")
+        with self.assertRaises(TooManyResultsError):
+            Car.objects.get_or_create(manufacturer="Tesla")
+
     def test_in_filters(self):
         """ Tests the __in filter """
 
