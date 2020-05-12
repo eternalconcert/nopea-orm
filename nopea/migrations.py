@@ -117,6 +117,7 @@ class Migration:
         old_state = {}
         actions = {}
         callables = {}
+        new_state = {}
         if migration_file:
             content = importlib.import_module(migration_file.split('.')[0])
             new_state = content.new_state  # MUST be there
