@@ -114,17 +114,35 @@ class Migration:
             return existing_migration_files[-1]
 
     def get_content_from_migration_file(self, migration_file):
+        old_state = {}
+        actions = {}
+        callables = {}
         if migration_file:
             content = importlib.import_module(migration_file.split('.')[0])
-            return (content.old_state, content.actions, content.new_state)
-        return ({}, {}, {})
+            new_state = content.new_state  # MUST be there
+
+            try:
+                old_state = content.old_state
+            except AttributeError:
+                pass
+            try:
+                actions = content.actions
+            except AttributeError:
+                pass
+                new_state = content.new_state
+            try:
+                callables = content.callables
+            except AttributeError:
+                pass
+
+        return (old_state, actions, new_state, callables)
 
     def create_migrations(self):
         timestamp = datetime.strftime(datetime.now(), '%Y%m%d_%H%M%S')
         existing_migration_files = self.get_existing_migration_files()
         last_migration_number = len(existing_migration_files)
         last_migration = self.get_last_migration(existing_migration_files)
-        _, _, new_state = self.get_content_from_migration_file(last_migration)
+        _, _, new_state, _ = self.get_content_from_migration_file(last_migration)
         old_state = new_state
 
         migration_file_path = os.path.join(
@@ -212,7 +230,7 @@ class Migration:
             print("Nothing to migrate")
         for migration_file in migrations_to_run:
             print("Running migration: %s" % migration_file)
-            old_state, actions, new_state = self.get_content_from_migration_file(migration_file)
+            old_state, actions, new_state, callables = self.get_content_from_migration_file(migration_file)
 
             for creation in actions.get('creations', {}).items():
                 self.create_table(creation[1])
@@ -224,5 +242,8 @@ class Migration:
 
             for field_deleteion in actions.get('fields_to_remove', {}).items():
                 self.drop_fields(field_deleteion[0], field_deleteion[1], old_state)
+
+            for func in callables:
+                func()
 
             self.adaptor.insert_migration(migration_file)
