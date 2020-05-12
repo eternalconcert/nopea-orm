@@ -116,7 +116,7 @@ class Migration:
     def get_content_from_migration_file(self, migration_file):
         old_state = {}
         actions = {}
-        callables = {}
+        callables = []
         new_state = {}
         if migration_file:
             content = importlib.import_module(migration_file.split('.')[0])
