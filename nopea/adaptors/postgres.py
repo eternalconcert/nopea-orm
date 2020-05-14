@@ -206,6 +206,12 @@ class PostgreSQLAdaptor(object):
             query += ' DEFAULT %s' % field.default
         return query
 
+    def get_integer_field_create_column_query(self, field):
+        query = 'ALTER TABLE %%s ADD COLUMN %s INTEGER' % field.fieldname
+        if field.default is not None:
+            query += ' DEFAULT %s' % field.default
+        return query
+
     def get_char_field_create_query(self, field):
         query = '%%s VARCHAR(%s)' % field.max_length
         if field.default is not None:
