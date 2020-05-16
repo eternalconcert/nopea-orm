@@ -171,7 +171,7 @@ class PostgreSQLAdaptor(object):
     def get_create_table_query(self, base, tablename):
         if not tablename:
             tablename = base.tablename
-        query = "CREATE TABLE %s (%%s);" % tablename
+        query = 'CREATE TABLE "%s" (%%s);' % tablename
         fk_fields = []
         fields = []
         fieldnames = []
