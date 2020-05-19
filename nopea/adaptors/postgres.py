@@ -105,7 +105,7 @@ class PostgreSQLAdaptor(object):
         return f" LIMIT  {limit}"
 
     def get_select_query(self, base, *args, **kwargs):
-        query = "SELECT %s FROM %s" % (', '.join(base.fieldnames), base.tablename)
+        query = 'SELECT %s FROM "%s"' % (', '.join(base.fieldnames), base.tablename)
         return query
 
     def get_insert_query(self, base, create_partial):
@@ -124,7 +124,7 @@ class PostgreSQLAdaptor(object):
                 fieldnames = [field.fieldname for field in base.fields if not isinstance(field, PkField)]
             else:
                 values.append(value)
-        query = "INSERT INTO %s (%s) VALUES (%s) RETURNING id" % (base.tablename,
+        query = 'INSERT INTO "%s" (%s) VALUES (%s) RETURNING id' % (base.tablename,
                                                                   ', '.join(fieldnames),
                                                                   ', '.join(['%s' for item in fieldnames]))
         return (query, tuple(values))
@@ -165,7 +165,7 @@ class PostgreSQLAdaptor(object):
         fieldnames = [field.fieldname for field in base.fields if not isinstance(field, PkField)]
         values = [tuple(getattr(item, fieldname) for fieldname in fieldnames) for item in objects]
         placeholders = ', '.join(['(%s)' % (', '.join(["%s" for i in item])) for item in values])
-        query = '''INSERT INTO %s (%s) VALUES %s''' % (base.tablename, ', '.join(fieldnames), placeholders)
+        query = '''INSERT INTO "%s" (%s) VALUES %s''' % (base.tablename, ', '.join(fieldnames), placeholders)
         return (query, tuple(v for tupl in values for v in tupl))
 
     def get_create_table_query(self, base, tablename):
