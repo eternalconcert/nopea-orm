@@ -242,7 +242,7 @@ class PostgreSQLAdaptor(object):
     def get_foreignkey_field_create_query_extension(self, reference):
         if type(DbObject) == type(reference):
             reference = reference.tablename
-        return 'FOREIGN KEY(%%s) REFERENCES %s(id)' % (reference)
+        return 'FOREIGN KEY(%%s) REFERENCES "%s"(id)' % (reference)
 
     def create_migration_table(self):
         query = """CREATE TABLE IF NOT EXISTS nopea_migrations

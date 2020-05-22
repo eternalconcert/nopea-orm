@@ -37,12 +37,13 @@ class QuerySet:
 
     def make_objects(self, instance, db_results) -> list:
         objects = []
+        cls = instance.__class__
         for result in db_results:
-            cls = instance.__class__
             _object = cls()
             mapped = zip(instance.fields, result)
             for field, value in mapped:
-                setattr(_object, field.fieldname, field.make_value(value, _object))
+                field.make_value(value)
+                setattr(_object, field.fieldname, field.value)
 
             for reverse_name, related_manager in cls.related_managers.items():
                 new_manager = copy(related_manager)

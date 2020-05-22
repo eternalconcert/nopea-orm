@@ -5,10 +5,22 @@ from nopea.exceptions import MaxLengthError
 from nopea.managers import RelatedManager
 
 
-class DbField(object):
+class Unresolved:
+    pass
 
-    def make_value(self, value, _object):
-        return value
+
+class DbField(object):
+    def __new__(cls, *args, **kwargs):
+        if len(args) > 0:
+            cls.adaptor = args[0].adaptor
+            cls.fieldname = cls.__name__.lower()
+        return super().__new__(cls)
+
+    def __init__(self):
+        self.value = Unresolved()
+
+    def make_value(self, value):
+        self.value = value
 
     def get_drop_column_query(self, base=None):
         # Must be a function for sqlite
@@ -106,12 +118,15 @@ class ForeignKey(DbField):
             self.reverse_name = target.__class__.__name__.lower() + '_set'
         setattr(self.reference_class, self.reverse_name, RelatedManager(target, self.fieldname, self.reverse_name))
 
-    def make_value(self, value, _object):
+    def make_value(self, value):
         if value:
             reference_obj = self.reference_class.objects.filter(id=value)
             if not reference_obj.exists():
-                return None
-            return reference_obj[0]
+                self.value = None
+            self.value = reference_obj[0]
+
+    def __get__(self, instance, owner):
+        return self
 
     @property
     def partial_create_table_query(self):
