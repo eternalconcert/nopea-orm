@@ -70,6 +70,10 @@ class Driver(DbObject):
     name = CharField(max_length=10)
 
 
+class Seller(DbObject):
+    name = CharField(max_length=10)
+
+
 class Car(DbObject):
     wheels = IntegerField(default=4)
     seats = IntegerField(default=5)
@@ -78,6 +82,7 @@ class Car(DbObject):
     motorcycle = BooleanField(default=False)
     built = DateTimeField()
     driver = ForeignKey(Driver)
+    seller = ForeignKey(Seller)
 
 
 class Bus(DbObject):
@@ -89,11 +94,13 @@ class TestMethods(unittest.TestCase):
     def setUp(self):
         Driver.create_table()
         self.driver = Driver.objects.create(name='Harry')
+        Seller.create_table()
+        self.seller = Seller.objects.create(name='Local Car Seller')
         Car.create_table()
-        self.car1 = Car.objects.create(wheels=4, manufacturer='Mercedes', seats=5, driver=self.driver)
-        self.car2 = Car.objects.create(wheels=4, manufacturer='BMW', seats=3)
-        self.car3 = Car.objects.create(wheels=4, manufacturer='Porsche', seats=2, built=datetime.now())
-        self.car4 = Car.objects.create(wheels=2, manufacturer='Harley Davidson', seats=2, motorcycle=True)
+        self.car1 = Car.objects.create(wheels=4, manufacturer='Mercedes', seats=5, driver=self.driver, seller=self.seller)
+        self.car2 = Car.objects.create(wheels=4, manufacturer='BMW', seats=3, seller=self.seller)
+        self.car3 = Car.objects.create(wheels=4, manufacturer='Porsche', seats=2, built=datetime.now(), seller=self.seller)
+        self.car4 = Car.objects.create(wheels=2, manufacturer='Harley Davidson', seats=2, motorcycle=True, seller=self.seller)
         Bus.create_table()
         Bus.objects.create(driver=self.driver)
 
@@ -447,10 +454,10 @@ class TestMethods(unittest.TestCase):
     def test_reverse_relation_exclude(self):
         self.car2.driver = self.driver
         self.car2.save()
-        self.assertEqual(self.driver.car_set.exclude(seats=3).count(), 1)
+        self.assertEqual(self.driver.car_set.exclude(seats=3).count(), 3)
         self.assertEqual(self.driver.car_set.exclude(seats=3)[0].manufacturer, "Mercedes")
 
-        self.assertEqual(self.driver.car_set.exclude(seats=5).count(), 1)
+        self.assertEqual(self.driver.car_set.exclude(seats=5).count(), 3)
         self.assertEqual(self.driver.car_set.exclude(seats=5)[0].manufacturer, "BMW")
 
     def test_reverse_relation_exists_no_relation(self):
@@ -458,7 +465,7 @@ class TestMethods(unittest.TestCase):
         self.assertEqual(driver.car_set.exists(), False)
 
     def test_reverse_relation_amount(self):
-        self.assertEqual(self.driver.car_set.count(), 1)
+        self.assertEqual(self.driver.car_set.count(), 4)
 
     def test_reverse_relation_identity(self):
         self.assertEqual(self.driver.car_set.all()[0].manufacturer, "Mercedes")
@@ -470,7 +477,7 @@ class TestMethods(unittest.TestCase):
 
         with self.assertRaises(AttributeError):
             self.driver.cars
-        self.assertEqual(self.driver.car_set.count(), 1)
+        self.assertEqual(self.driver.car_set.count(), 4)
 
     def test_create_migrations(self):
         with tempfile.TemporaryDirectory() as migration_dir:
@@ -494,8 +501,8 @@ class TestMethods(unittest.TestCase):
             migration_file = os.listdir(migration.migration_dir)[0]
             old_state, actions, new_state, callables = migration.get_content_from_migration_file(migration_file)
             self.assertEqual(old_state, {})
-            self.assertEqual(set(actions['creations'].keys()), set(['Bus', 'Car', 'Driver']))
-            self.assertEqual(new_state.keys(), set(['Bus', 'Car', 'Driver']))
+            self.assertEqual(set(actions['creations'].keys()), set(['Bus', 'Car', 'Driver', 'Seller']))
+            self.assertEqual(new_state.keys(), set(['Bus', 'Car', 'Driver', 'Seller']))
 
     def test_valid_max_length_small_value(self):
         self.assertIsInstance(CharField(max_length=1), CharField)
@@ -571,6 +578,7 @@ class TestMethods(unittest.TestCase):
         DbObject.adaptor.execute_query("DROP TABLE bus", None)
         DbObject.adaptor.execute_query("DROP TABLE car", None)
         DbObject.adaptor.execute_query("DROP TABLE driver", None)
+        DbObject.adaptor.execute_query("DROP TABLE seller", None)
 
 
 class MigrationContext:

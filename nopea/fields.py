@@ -109,9 +109,10 @@ class DateTimeField(DbField):
 
 class ForeignKey(DbField):
 
-    def __init__(self, reference_class, reverse_name=None):
+    def __init__(self, reference_class, reverse_name=None, lazy=False):
         self.reference_class = reference_class
         self.reverse_name = reverse_name
+        self.lazy = lazy
 
     def set_related_manager(self, target):
         if not self.reverse_name:
@@ -119,11 +120,14 @@ class ForeignKey(DbField):
         setattr(self.reference_class, self.reverse_name, RelatedManager(target, self.fieldname, self.reverse_name))
 
     def make_value(self, value):
-        if value:
-            reference_obj = self.reference_class.objects.filter(id=value)
-            if not reference_obj.exists():
-                self.value = None
-            self.value = reference_obj[0]
+        if not self.lazy:
+            if value:
+                reference_obj = self.reference_class.objects.filter(id=value)
+                if not reference_obj.exists():
+                    self.value = None
+                self.value = reference_obj[0]
+        else:
+            self.value = ReverseLazy(value, self.reference_class)
 
     def __get__(self, instance, owner):
         return self
@@ -139,3 +143,17 @@ class ForeignKey(DbField):
     @property
     def add_column_query(self):
         raise NotImplementedError("Still not implemented")
+
+
+class ReverseLazy:
+    def __init__(self, value, reference_class):
+        self.value = value
+        self.reference_class = reference_class
+
+    def __call__(self):
+        if self.value:
+            reference_obj = self.reference_class.objects.filter(id=self.value)
+            if not reference_obj.exists():
+                return None
+            return reference_obj[0]
+        return self
