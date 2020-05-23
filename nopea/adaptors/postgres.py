@@ -197,6 +197,9 @@ class PostgreSQLAdaptor(object):
         query = "DROP TABLE %s;" % tablename
         return (query, None)
 
+    def get_drop_column_query(self, field, base):
+        return f'ALTER TABLE "{base.tablename}" DROP COLUMN "{field.fieldname}"'
+
     def get_pkfield_create_query(self):
         return '%s SERIAL PRIMARY KEY'
 
