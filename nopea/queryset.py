@@ -54,13 +54,22 @@ class QuerySet:
 
         return objects
 
+    def _make_select_query(self):
+        if self.partials['count']:
+            return self.adaptor.get_count_query(self.base)
+        return self.adaptor.get_select_query(self.base)
+
     def _make_all_query(self):
-        if self.partials['all']:
-            self.query = self.adaptor.get_select_query(self.base)
+        if self.partials['all'] and not self.partials['count']:
+            self.query = self._make_select_query()
+
+    def _make_count_query(self):
+        if self.partials['count'] == True:
+            self.query = self.adaptor.get_count_query(self.base)
 
     def _make_where_clause(self):
         if self.partials['filters'] or self.partials['excludes']:
-            self.query = self.adaptor.get_select_query(self.base) + ' WHERE '
+            self.query = self._make_select_query() + ' WHERE '
 
     def _make_updates(self):
         if self.partials['updates']:
@@ -118,6 +127,7 @@ class QuerySet:
         self.query_args = []
 
         self._make_all_query()
+        self._make_count_query()
         self._make_where_clause()
         self._make_updates()
         self._make_deletions()
@@ -135,6 +145,8 @@ class QuerySet:
 
     def __call__(self):
         result = self.execute_sql()
+        if self.partials['count']:
+            return result[0][0]
         return self.make_objects(self.base, result)
 
     def __iter__(self):
@@ -200,7 +212,8 @@ class QuerySet:
             return result[0]
 
     def count(self):
-        return len(self())
+        self.partials['count'] = True
+        return self()
 
     def exists(self):
         return self.count() > 0

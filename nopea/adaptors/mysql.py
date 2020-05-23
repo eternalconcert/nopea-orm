@@ -104,6 +104,10 @@ class MySQLAdaptor(object):
         query = "SELECT %s FROM %s" % (', '.join(base.fieldnames), base.tablename)
         return query
 
+    def get_count_query(self, base, *args, **kwargs):
+        query = f'SELECT COUNT(*) FROM "{base.tablename}"'
+        return query
+
     def get_insert_query(self, base, create_partial):
         values = []
         for field in base.fields:
