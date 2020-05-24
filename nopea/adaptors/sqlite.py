@@ -27,6 +27,7 @@ class SQLiteAdaptor(object):
         return connection, cursor
 
     def execute_query(self, query, query_args):
+        print(query, query_args)
         connection, cursor = self.get_connection_and_cursor()
         if not query_args:
             cursor.execute(query)

@@ -40,6 +40,7 @@ class DbObject(metaclass=MetaType):
             pk[0]
         except IndexError:
             self.id = PkField()
+            self.id.value = None
             self.fields.append(self.id)
             self.fieldnames.append('id')
 

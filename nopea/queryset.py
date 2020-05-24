@@ -33,7 +33,8 @@ class QuerySet:
         return "%s%s" % (str([item for item in result]), appendix)
 
     def __len__(self):
-        return self.count()
+        result = self()
+        return len(result)
 
     def make_objects(self, instance, db_results) -> list:
         objects = []
@@ -54,22 +55,15 @@ class QuerySet:
 
         return objects
 
-    def _make_select_query(self):
-        if self.partials['count']:
-            return self.adaptor.get_count_query(self.base)
-        return self.adaptor.get_select_query(self.base)
-
-    def _make_all_query(self):
-        if self.partials['all'] and not self.partials['count']:
-            self.query = self._make_select_query()
-
-    def _make_count_query(self):
+    def _make_query_base(self):
         if self.partials['count'] == True:
             self.query = self.adaptor.get_count_query(self.base)
+        else:
+            self.query = self.adaptor.get_select_query(self.base)
 
     def _make_where_clause(self):
         if self.partials['filters'] or self.partials['excludes']:
-            self.query = self._make_select_query() + ' WHERE '
+            self.query += ' WHERE '
 
     def _make_updates(self):
         if self.partials['updates']:
@@ -126,8 +120,7 @@ class QuerySet:
     def compile_query(self) -> tuple:
         self.query_args = []
 
-        self._make_all_query()
-        self._make_count_query()
+        self._make_query_base()
         self._make_where_clause()
         self._make_updates()
         self._make_deletions()
