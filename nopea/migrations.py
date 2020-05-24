@@ -178,6 +178,7 @@ class Migration:
         dummy = DbObject
         setattr(dummy, 'tablename', attrs['tablename'])
         setattr(dummy, 'fieldnames', [])
+        setattr(dummy, 'fields', [])
         for field in attrs['fields']:
             for fieldname, field_conf in field.items():
                 dummy.fieldnames.append(fieldname)
@@ -187,6 +188,7 @@ class Migration:
                     field_attrs['reference_class'] = self.ref_models[ref_cls]
                 field_cls = field_dict.get(field_conf.get('field_type'))
                 field_inst = field_cls(**field_attrs)
+                dummy.fields.append(field_inst)
                 setattr(field_inst, 'adaptor', self.adaptor)
                 setattr(field_inst, 'fieldname', fieldname)
                 setattr(dummy, fieldname, field_inst)
