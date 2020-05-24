@@ -9,7 +9,7 @@ setupargs = {
     'description': 'Provides an ORM for MySQL, PostgreSQL and SQLite.',
 
     'license': 'GPLv3',
-    'version': '0.0.6',
+    'version': '0.0.7',
 
     'packages': ['nopea', 'nopea.adaptors'],
     'long_description': long_description,
@@ -19,7 +19,7 @@ setupargs = {
     'author_email': 'info@softcreate.de',
     'install_requires': [
         'colorama==0.3.9',
-        'ipython==7.9.0'
+        'ipython'
     ],
 }
 

@@ -108,6 +108,10 @@ class PostgreSQLAdaptor(object):
         query = 'SELECT %s FROM "%s"' % (', '.join(base.fieldnames), base.tablename)
         return query
 
+    def get_count_query(self, base, *args, **kwargs):
+        query = f'SELECT COUNT(*) FROM "{base.tablename}"'
+        return query
+
     def get_insert_query(self, base, create_partial):
         values = []
         fieldnames = [field.fieldname for field in base.fields]
@@ -196,6 +200,9 @@ class PostgreSQLAdaptor(object):
             tablename = base.tablename
         query = "DROP TABLE %s;" % tablename
         return (query, None)
+
+    def get_drop_column_query(self, field, base):
+        return f'ALTER TABLE "{base.tablename}" DROP COLUMN "{field.fieldname}"'
 
     def get_pkfield_create_query(self):
         return '%s SERIAL PRIMARY KEY'
