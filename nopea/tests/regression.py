@@ -406,8 +406,8 @@ class TestMethods(unittest.TestCase):
 
     def test_chaining_querysets(self):
         cars = Car.objects.filter(seats=2).exclude(motorcycle=True)
-        self.assertEqual(cars.count(), 1)
         self.assertEqual(cars[0].manufacturer, 'Porsche')
+        self.assertEqual(cars.count(), 1)
 
     def test_chaining_append_get_valid_result(self):
         cars = Car.objects.filter(wheels=4).exclude(motorcycle=True)

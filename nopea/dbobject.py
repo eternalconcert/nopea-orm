@@ -12,6 +12,18 @@ class MetaType(type):
         if name == 'DbObject':
             setattr(cls, 'managed_models', [])
             return
+        cls.fields = [v for v in cls.__dict__.values() if isinstance(v, DbField)]
+        cls.fieldnames = [k for k, v in cls.__dict__.items() if isinstance(v, DbField)]
+
+        pk = [f for f in cls.fields if type(f) == PkField]
+        try:
+            pk[0]
+        except IndexError:
+            cls.id = PkField()
+            cls.id.value = None
+            cls.fields.append(cls.id)
+            cls.fieldnames.append('id')
+
 
         cls.managed_models.append(cls)
 
@@ -32,18 +44,6 @@ class DbObject(metaclass=MetaType):
     related_managers = {}
 
     def __init__(self, *args, **kwargs):
-        self.fields = [v for v in self.__class__.__dict__.values() if isinstance(v, DbField)]
-        self.fieldnames = [k for k, v in self.__class__.__dict__.items() if isinstance(v, DbField)]
-
-        pk = [f for f in self.fields if type(f) == PkField]
-        try:
-            pk[0]
-        except IndexError:
-            self.id = PkField()
-            self.id.value = None
-            self.fields.append(self.id)
-            self.fieldnames.append('id')
-
         for name in self.fieldnames:
             field = getattr(self, name)
             if kwargs:

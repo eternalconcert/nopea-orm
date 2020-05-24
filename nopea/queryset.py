@@ -30,7 +30,7 @@ class QuerySet:
         appendix = ""
         if len(result) > 20:
             appendix = " ..remainung elements truncated."
-        return "%s%s" % (str([item for item in result]), appendix)
+        return "%s%s" % (str([item for item in result[:20]]), appendix)
 
     def __len__(self):
         result = self()
@@ -187,7 +187,7 @@ class QuerySet:
             count_qs = QuerySet(self.base)
             for item in filters:
                 count_qs = count_qs.filter(**item)
-            count = count_qs.count()
+            count = len(count_qs)
 
         for key, value in kwargs.items():
             self.partials['updates'].append({key: value})
@@ -209,4 +209,4 @@ class QuerySet:
         return self()
 
     def exists(self):
-        return self.count() > 0
+        return len(self) > 0
