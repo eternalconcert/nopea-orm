@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-from nopea.fields import DbField, ForeignKey, PkField
+from nopea.fields import DbField, ForeignKey, PkField, ReverseLazy
 from nopea.managers import Manager
 from nopea.queryset import QuerySet
 
@@ -66,6 +66,8 @@ class DbObject(metaclass=MetaType):
             value = getattr(self, fieldname)
             if isinstance(value, DbObject):
                 value = value.id
+            if isinstance(value, ReverseLazy):
+                value = value().id
             settings[fieldname] = value
         return settings
 

@@ -22,6 +22,9 @@ class DbField(object):
     def make_value(self, value):
         self.value = value
 
+    def get_value(self):
+        return self.value
+
     def get_drop_column_query(self, base=None):
         # Must be a function for sqlite
         return self.adaptor.get_drop_column_query(self, base)
@@ -131,6 +134,11 @@ class ForeignKey(DbField):
 
     def __get__(self, instance, owner):
         return self
+
+    def get_value(self):
+        if self.lazy:
+            return self.value().id
+        return self.value
 
     @property
     def partial_create_table_query(self):
