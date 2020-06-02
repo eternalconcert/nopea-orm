@@ -101,8 +101,16 @@ class PostgreSQLAdaptor(object):
                 query = '%s IS NOT NULL' % key
         return query, value
 
-    def get_limit_query(self, limit):
-        return f" LIMIT  {limit}"
+    def get_offset_query(self, offset, limit):
+        # Limit is required for SQLite. Can be ignored here
+        return f" OFFSET {offset}"
+
+    def get_limit_query(self, limit, offset):
+        if offset and offset > 0:
+            limit = limit - offset
+            if offset > limit:
+                limit = 0
+        return f" LIMIT {limit}"
 
     def get_select_query(self, base, *args, **kwargs):
         query = 'SELECT %s FROM "%s"' % (', '.join(base.fieldnames), base.tablename)

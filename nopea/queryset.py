@@ -18,6 +18,7 @@ class QuerySet:
             'excludes': [],
             'updates': [],
             'orders': [],
+            'offset': None,
             'limit': None,
             'create': None,
             'all': False,
@@ -113,9 +114,13 @@ class QuerySet:
                 orders.append('%s %s' % (order_partial[0].replace('-', ''), direction))
             self.query += ', '.join(orders)
 
-    def _make_limits(self):
+    def _make_offset(self):
+        if self.partials['offset']:
+            self.query += self.adaptor.get_offset_query(self.partials['offset'], self.partials['limit'])
+
+    def _make_limit(self):
         if self.partials['limit']:
-            self.query += self.adaptor.get_limit_query(self.partials['limit'])
+            self.query += self.adaptor.get_limit_query(self.partials['limit'], self.partials['offset'])
 
     def compile_query(self) -> tuple:
         self.query_args = []
@@ -127,8 +132,8 @@ class QuerySet:
         self._make_filters()
         self._make_excludes()
         self._make_orders()
-        self._make_limits()
-
+        self._make_limit()
+        self._make_offset()
         return (self.query, self.query_args)
 
     def execute_sql(self):
@@ -147,8 +152,21 @@ class QuerySet:
         for item in objects:
             yield item
 
-    def __getitem__(self, n):
-        return list(self)[n]
+    def __getitem__(self, s):
+        if isinstance(s, int):
+            start = s
+            stop = s + 1
+
+            self.partials['offset'] = start
+            self.partials['limit'] = stop
+            return list(self)[0]
+        if isinstance(s, slice):
+            start = s.start
+            stop = s.stop
+
+        self.partials['offset'] = start
+        self.partials['limit'] = stop
+        return list(self)
 
     def filter(self, *args, **kwargs):
         if not kwargs:
