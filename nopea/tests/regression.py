@@ -574,6 +574,28 @@ class TestMethods(unittest.TestCase):
         car = Car.objects.first().to_dict()
         self.assertEqual(car['driver']['name'], "Harry")
 
+    def test_limit(self):
+        s = slice(None, 2)  # [:2]
+        self.assertEqual(Car.objects.all()[s][0].manufacturer, "Mercedes")
+        self.assertEqual(Car.objects.all()[s][1].manufacturer, "BMW")
+        self.assertEqual(len(Car.objects.all()[s]), 2)
+
+    def test_offset(self):
+        s = slice(2, None)  # [2:]
+        self.assertEqual(Car.objects.all()[s][0].manufacturer, "Porsche")
+        self.assertEqual(Car.objects.all()[s][1].manufacturer, "Harley Davidson")
+        self.assertEqual(len(Car.objects.all()[s]), 2)
+
+    def test_limit_and_offset(self):
+        s = slice(1, 3)  # [1:3]
+        self.assertEqual(Car.objects.all()[s][0].manufacturer, "BMW")
+        self.assertEqual(Car.objects.all()[s][1].manufacturer, "Porsche")
+        self.assertEqual(len(Car.objects.all()[s]), 2)
+
+    def test_limit_lt_offset(self):
+        s = slice(4, 3)  # [1:3]
+        self.assertEqual(len(Car.objects.all()[s]), 0)
+
     def tearDown(self):
         DbObject.adaptor.execute_query("DROP TABLE bus", None)
         DbObject.adaptor.execute_query("DROP TABLE car", None)

@@ -93,8 +93,18 @@ class SQLiteAdaptor(object):
                 query = '%s IS NOT NULL' % key
         return query, value
 
-    def get_limit_query(self, limit):
-        return f" LIMIT  {limit}"
+    def get_offset_query(self, offset, limit):
+        q = f" OFFSET {offset}"
+        if not limit:
+            q = " LIMIT -1" + q
+        return q
+
+    def get_limit_query(self, limit, offset):
+        if offset and offset > 0:
+            limit = limit - offset
+            if offset > limit:
+                limit = 0
+        return f" LIMIT {limit}"
 
     def get_select_query(self, base, *args, **kwargs):
         query = "SELECT %s FROM %s" % (', '.join(base.fieldnames), base.tablename)
