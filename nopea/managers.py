@@ -37,6 +37,9 @@ class Manager:
     def first(self):
         return self.all().first()
 
+    def last(self):
+        return self.all().last()
+
     def count(self):
         return self.filter().count()
 

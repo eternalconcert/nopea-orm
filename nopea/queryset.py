@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-from copy import copy
+from copy import copy, deepcopy
 
 from nopea.exceptions import TooManyResultsError
 
@@ -218,6 +218,18 @@ class QuerySet:
 
     def first(self):
         self.partials['limit'] = 1
+        result = self()
+        if result:
+            return result[0]
+
+    def last(self):
+        count_qs = QuerySet(self.base)
+        filters = self.partials['filters']
+        for item in filters:
+            count_qs = count_qs.filter(**item)
+        count = len(count_qs)
+
+        self.partials['offset'] = count - 1
         result = self()
         if result:
             return result[0]
