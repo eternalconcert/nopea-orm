@@ -395,14 +395,32 @@ class TestMethods(unittest.TestCase):
         bus = Bus.objects.all().order_by('id').first()
         self.assertIsNone(bus)
 
+    def test_first_on_queryset_reversed(self):
+        car = Car.objects.all().order_by('-id').first()
+        self.assertEqual(car.id, 4)
+
     def test_first_on_manager_without_result(self):
         Bus.objects.all().delete()
         bus = Bus.objects.first()
         self.assertIsNone(bus)
 
-    def test_first_on_queryset_without_result(self):
-        car = Car.objects.all().order_by('-id').first()
+    def test_last_on_manager(self):
+        car = Car.objects.last()
         self.assertEqual(car.id, 4)
+
+    def test_last_on_queryset(self):
+        Bus.objects.all().delete()
+        bus = Bus.objects.all().order_by('id').last()
+        self.assertIsNone(bus)
+
+    def test_last_on_queryset_reversed(self):
+        car = Car.objects.all().order_by('-id').last()
+        self.assertEqual(car.id, 1)
+
+    def test_last_on_manager_without_result(self):
+        Bus.objects.all().delete()
+        bus = Bus.objects.last()
+        self.assertIsNone(bus)
 
     def test_chaining_querysets(self):
         cars = Car.objects.filter(seats=2).exclude(motorcycle=True)
