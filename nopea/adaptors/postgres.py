@@ -108,8 +108,6 @@ class PostgreSQLAdaptor(object):
     def get_limit_query(self, limit, offset):
         if offset and offset > 0:
             limit = limit - offset
-            if offset > limit:
-                limit = 0
         return f" LIMIT {limit}"
 
     def get_select_query(self, base, *args, **kwargs):
