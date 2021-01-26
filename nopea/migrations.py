@@ -38,7 +38,10 @@ class Migration:
             for field in instance.fields:
                 field_attrs = {}
                 if getattr(field, 'default', None) is not None:
-                    field_attrs['default'] = getattr(field, 'default', None)
+                    if not hasattr(getattr(field, 'default'), '__call__'):
+                        field_attrs['default'] = getattr(field, 'default', None)
+                    else:
+                        field_attrs['default'] = None
                 if getattr(field, 'max_length', None) is not None:
                     field_attrs['max_length'] = getattr(field, 'max_length', None)
                 if getattr(field, 'reference_class', None) is not None:
@@ -174,11 +177,16 @@ class Migration:
             content = old_state_string + actions_string + new_state_string
             migration_file.write(content)
 
-    def get_dummy(self, attrs):
+    def get_dummy(self, attrs, name=''):
+        class Dummy(DbObject):
+            tablename = attrs['tablename']
+        Dummy.__name__ = f"{name} (Dummy)" if name else Dummy.__name__
+        Dummy.fieldnames = [list(item.keys())[0] for item in attrs['fields']]
         dummy = DbObject
         setattr(dummy, 'tablename', attrs['tablename'])
         setattr(dummy, 'fieldnames', [])
         setattr(dummy, 'fields', [])
+
         for field in attrs['fields']:
             for fieldname, field_conf in field.items():
                 dummy.fieldnames.append(fieldname)
@@ -192,6 +200,8 @@ class Migration:
                 setattr(field_inst, 'adaptor', self.adaptor)
                 setattr(field_inst, 'fieldname', fieldname)
                 setattr(dummy, fieldname, field_inst)
+        Dummy.fields = dummy.fields
+        dummy.objects = Dummy().objects
         return dummy
 
     def create_table(self, attrs):
@@ -237,14 +247,15 @@ class Migration:
 
             for creation in actions.get('creations', {}).items():
                 self.create_table(creation[1])
+
             for deletion in actions.get('deletions', {}).items():
                 self.drop_table(deletion[1])
 
             for field_creation in actions.get('fields_to_add', {}).items():
                 self.add_fields(field_creation[0], field_creation[1], old_state)
 
-            for field_deleteion in actions.get('fields_to_remove', {}).items():
-                self.drop_fields(field_deleteion[0], field_deleteion[1], old_state)
+            for field_deletion in actions.get('fields_to_remove', {}).items():
+                self.drop_fields(field_deletion[0], field_deletion[1], old_state)
 
             for func in callables:
                 func()

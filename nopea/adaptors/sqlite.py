@@ -3,8 +3,9 @@
 
 import sqlite3
 
+from datetime import datetime
 from nopea.dbobject import DbObject
-from nopea.fields import ForeignKey
+from nopea.fields import ForeignKey, DateTimeField
 
 
 class IsNull:
@@ -121,6 +122,8 @@ class SQLiteAdaptor(object):
             if value is None:
                 try:
                     value = field.default
+                    if hasattr(field.default, '__call__'):
+                        value = field.default()
                 except AttributeError:
                     pass
             values.append(value)
