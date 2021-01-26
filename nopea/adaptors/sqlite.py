@@ -3,8 +3,9 @@
 
 import sqlite3
 
+from datetime import datetime
 from nopea.dbobject import DbObject
-from nopea.fields import ForeignKey
+from nopea.fields import ForeignKey, DateTimeField
 
 
 class IsNull:
@@ -102,8 +103,6 @@ class SQLiteAdaptor(object):
     def get_limit_query(self, limit, offset):
         if offset and offset > 0:
             limit = limit - offset
-            if offset > limit:
-                limit = 0
         return f" LIMIT {limit}"
 
     def get_select_query(self, base, *args, **kwargs):
@@ -123,6 +122,8 @@ class SQLiteAdaptor(object):
             if value is None:
                 try:
                     value = field.default
+                    if hasattr(field.default, '__call__'):
+                        value = field.default()
                 except AttributeError:
                     pass
             values.append(value)

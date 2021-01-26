@@ -1,7 +1,7 @@
 ![Tests](https://github.com/eternalconcert/nopea-orm/workflows/Tests/badge.svg)
 
 # Nopea
-(Version 0.0.11)
+(Version 0.0.13)
 
 ---
 ## Purpose

@@ -149,7 +149,7 @@ class TestMethods(unittest.TestCase):
         self.assertEqual(Car.objects.filter(manufacturer='Mercedes')[0].wheels, 4)
 
     def test_all(self):
-        """ Tests the objecs.all() method """
+        """ Tests the objects.all() method """
 
         self.assertEqual(len(Car.objects.all()), len(Car.objects.filter()))
 
