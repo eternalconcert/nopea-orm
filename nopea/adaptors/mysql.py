@@ -99,12 +99,12 @@ class MySQLAdaptor(object):
 
     def get_offset_query(self, offset, limit):
         # Limit is required for SQLite. Can be ignored here
-        return f" OFFSET {offset}"
+        return f" OFFSET {offset if offset >= 0 else 0}"
 
     def get_limit_query(self, limit, offset):
         if offset and offset > 0:
             limit = limit - offset
-        return f" LIMIT {limit}"
+        return f" LIMIT {limit if limit >=0 else 0}"
 
     def get_select_query(self, base, *args, **kwargs):
         query = "SELECT %s FROM %s" % (', '.join(base.fieldnames), base.tablename)
@@ -228,8 +228,17 @@ class MySQLAdaptor(object):
             query += ' DEFAULT %s' % field.default
         return query
 
-    def get_text_field_create_query(self):
-        return '%s TEXT'
+    def get_text_field_create_query(self, field):
+        query = '%s TEXT'
+        if field.default is not None:
+            query += " NOT NULL DEFAULT '%s'" % field.default
+        return query
+
+    def get_text_field_create_column_query(self, field):
+        query = 'ALTER TABLE %%s ADD COLUMN %s TEXT' % (field.fieldname)
+        if field.default is not None:
+            query += " NOT NULL DEFAULT '%s'" % field.default
+        return query
 
     def get_datetime_field_create_query(self, default):
         if default is None:

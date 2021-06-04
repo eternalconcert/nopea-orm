@@ -28,6 +28,7 @@ class PostgreSQLAdaptor(object):
 
     def execute_query(self, query, query_args):
         connection, cursor = self.get_connection_and_cursor()
+
         if not query_args:
             cursor.execute(query)
         else:
@@ -103,12 +104,12 @@ class PostgreSQLAdaptor(object):
 
     def get_offset_query(self, offset, limit):
         # Limit is required for SQLite. Can be ignored here
-        return f" OFFSET {offset}"
+        return f" OFFSET {offset if offset >= 0 else 0}"
 
     def get_limit_query(self, limit, offset):
         if offset and offset > 0:
             limit = limit - offset
-        return f" LIMIT {limit}"
+        return f" LIMIT {limit if limit >=0 else 0}"
 
     def get_select_query(self, base, *args, **kwargs):
         query = 'SELECT %s FROM "%s"' % (', '.join(base.fieldnames), base.tablename)
@@ -156,7 +157,7 @@ class PostgreSQLAdaptor(object):
                 affected_fields.append(field.fieldname)
 
         settings = ', '.join(['%s=%%s' % item for item in affected_fields])
-        query = "UPDATE %s SET %s " % (base.tablename, settings)
+        query = 'UPDATE "%s" SET %s ' % (base.tablename, settings)
         return (query, tuple(values))
 
     def bulk_create(self, objects, base):
@@ -237,8 +238,17 @@ class PostgreSQLAdaptor(object):
             query += ' DEFAULT %s' % field.default
         return query
 
-    def get_text_field_create_query(self):
-        return '%s TEXT'
+    def get_text_field_create_query(self, field):
+        query = '%s TEXT'
+        if field.default is not None:
+            query += " NOT NULL DEFAULT '%s'" % field.default
+        return query
+
+    def get_text_field_create_column_query(self, field):
+        query = 'ALTER TABLE %%s ADD COLUMN %s TEXT' % (field.fieldname)
+        if field.default is not None:
+            query += " NOT NULL DEFAULT '%s'" % field.default
+        return query
 
     def get_datetime_field_create_query(self, default):
         if default is None:
