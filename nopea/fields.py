@@ -73,9 +73,12 @@ class CharField(DbField):
 
 class TextField(DbField):
 
+    def __init__(self, default=""):
+        self.default = default
+
     @property
     def partial_create_table_query(self):
-        return self.adaptor.get_text_field_create_query()
+        return self.adaptor.get_text_field_create_query(self)
 
     @property
     def add_column_query(self):
