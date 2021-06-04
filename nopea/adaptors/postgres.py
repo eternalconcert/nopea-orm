@@ -229,13 +229,13 @@ class PostgreSQLAdaptor(object):
     def get_char_field_create_query(self, field):
         query = '%%s VARCHAR(%s)' % field.max_length
         if field.default is not None:
-            query += ' DEFAULT %s' % field.default
+            query += ' DEFAULT "%s"' % field.default
         return query
 
     def get_charfield_create_column_query(self, field):
         query = 'ALTER TABLE %%s ADD COLUMN %s VARCHAR(%s)' % (field.fieldname, field.max_length)
         if field.default is not None:
-            query += ' DEFAULT %s' % field.default
+            query += ' DEFAULT "%s"' % field.default
         return query
 
     def get_text_field_create_query(self, field):

@@ -225,7 +225,7 @@ class MySQLAdaptor(object):
     def get_charfield_create_column_query(self, field):
         query = 'ALTER TABLE %%s ADD COLUMN %s CHAR(%s)' % (field.fieldname, field.max_length)
         if field.default is not None:
-            query += ' DEFAULT %s' % field.default
+            query += ' DEFAULT "%s"' % field.default
         return query
 
     def get_text_field_create_query(self, field):
