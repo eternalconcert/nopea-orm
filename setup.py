@@ -9,7 +9,7 @@ setupargs = {
     'description': 'Provides an ORM for MySQL, PostgreSQL and SQLite.',
 
     'license': 'GPLv3',
-    'version': '0.0.14',
+    'version': '0.0.15',
 
     'packages': ['nopea', 'nopea.adaptors'],
     'long_description': long_description,
