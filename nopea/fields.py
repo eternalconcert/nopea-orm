@@ -115,11 +115,11 @@ class DateTimeField(DbField):
 
 class ForeignKey(DbField):
 
-    def __init__(self, reference_class, reverse_name=None, lazy=False, cascade=''):
+    def __init__(self, reference_class, reverse_name=None, lazy=False, on_delete=''):
         self.reference_class = reference_class
         self.reverse_name = reverse_name
         self.lazy = lazy
-        self.cascade = cascade
+        self.on_delete = on_delete
 
     def set_related_manager(self, target):
         if not self.reverse_name:
@@ -150,7 +150,7 @@ class ForeignKey(DbField):
 
     @property
     def partial_create_table_query_extension(self):
-        return self.adaptor.get_foreignkey_field_create_query_extension(self.reference_class, self.cascade)
+        return self.adaptor.get_foreignkey_field_create_query_extension(self.reference_class, self.on_delete)
 
     @property
     def add_column_query(self):

@@ -252,12 +252,12 @@ class MySQLAdaptor(object):
     def get_foreignkey_field_create_query_base(self):
         return '%s INTEGER'
 
-    def get_foreignkey_field_create_query_extension(self, reference, cascade=''):
-        if cascade != '':
-             cascade = ' ON DELETE %' % cascade.upper()
+    def get_foreignkey_field_create_query_extension(self, reference, on_delete=''):
+        if on_delete != '':
+            on_delete = ' ON DELETE %s' % on_delete.upper()
         if type(DbObject) == type(reference):
             reference = reference.tablename
-        return 'FOREIGN KEY(%%s) REFERENCES "%s"(id)%s' % (reference, cascade)
+        return 'FOREIGN KEY(%%s) REFERENCES "%s"(id)%s' % (reference, on_delete)
 
     def create_migration_table(self):
         query = """CREATE TABLE IF NOT EXISTS nopea_migrations

@@ -82,7 +82,7 @@ class Car(DbObject):
     motorcycle = BooleanField(default=False)
     built = DateTimeField()
     driver = ForeignKey(Driver)
-    seller = ForeignKey(Seller)
+    seller = ForeignKey(Seller, on_delete='CASCADE')
 
 
 class Bus(DbObject):
