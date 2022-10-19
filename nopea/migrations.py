@@ -47,13 +47,15 @@ class Migration:
                 if getattr(field, 'reference_class', None) is not None:
                     ref_obj = getattr(field, 'reference_class', None)
                     field_attrs['reference_class'] = ref_obj.__name__
+                if getattr(field, 'on_delete', None) is not None:
+                    on_delete = getattr(field, 'on_delete', None)
+                    field_attrs['on_delete'] = on_delete
                 self.current_model_state[class_name]['fields'].append(
                     {field.fieldname: {
                         'field_type': field.__class__.__name__,
                         'field_attrs': field_attrs
                     }}
                 )
-
         return self.current_model_state
 
     def get_field_changes(self, old_state, new_state):
