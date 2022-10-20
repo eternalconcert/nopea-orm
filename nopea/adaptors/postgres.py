@@ -150,7 +150,7 @@ class PostgreSQLAdaptor(object):
         settings = ''
         for field in base.fields:
             value = update_partial.get(field.fieldname)
-            if not value:
+            if value is None:
                 pass
             else:
                 values.append(value)
