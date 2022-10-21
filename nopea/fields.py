@@ -157,6 +157,17 @@ class ForeignKey(DbField):
         raise NotImplementedError("Still not implemented")
 
 
+class ByteField(DbField):
+
+    @property
+    def partial_create_table_query(self):
+        return self.adaptor.get_byte_field_field_create_query(self)
+
+    @property
+    def add_column_query(self):
+        return self.adaptor.get_byte_field_create_column_query(self)
+
+
 class ReverseLazy:
     def __init__(self, value, reference_class):
         self.value = value

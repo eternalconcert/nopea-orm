@@ -259,6 +259,12 @@ class MySQLAdaptor(object):
             reference = reference.tablename
         return 'FOREIGN KEY(%%s) REFERENCES "%s"(id)%s' % (reference, on_delete)
 
+    def get_byte_field_field_create_query(self):
+        raise NotImplementedError("Currently only for Postgres implemented")
+
+    def get_byte_field_create_column_query(self):
+        raise NotImplementedError("Currently only for Postgres implemented")
+
     def create_migration_table(self):
         query = """CREATE TABLE IF NOT EXISTS nopea_migrations
                     (name CHAR(250), id INTEGER PRIMARY KEY AUTO_INCREMENT)"""

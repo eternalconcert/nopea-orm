@@ -11,9 +11,9 @@ from pprint import pformat
 from datetime import datetime
 
 from nopea.dbobject import DbObject
-from nopea.fields import BooleanField, CharField, DateTimeField, ForeignKey, IntegerField, PkField, TextField
+from nopea.fields import BooleanField, CharField, DateTimeField, ForeignKey, IntegerField, PkField, TextField, ByteField
 
-field_types = [BooleanField, CharField, DateTimeField, ForeignKey, IntegerField, PkField, TextField]
+field_types = [BooleanField, CharField, DateTimeField, ForeignKey, IntegerField, PkField, TextField, ByteField]
 field_dict = {field.__name__: field for field in field_types}
 
 
