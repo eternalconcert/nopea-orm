@@ -154,7 +154,7 @@ class ForeignKey(DbField):
 
     @property
     def add_column_query(self):
-        raise NotImplementedError("Still not implemented")
+        return self.adaptor.get_foreign_field_add_column_query(self, self.reference_class, self.on_delete)
 
 
 class ByteField(DbField):

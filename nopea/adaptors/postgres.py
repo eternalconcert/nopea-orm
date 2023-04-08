@@ -269,6 +269,14 @@ class PostgreSQLAdaptor(object):
             reference = reference.tablename
         return 'FOREIGN KEY(%%s) REFERENCES "%s"(id)%s' % (reference, on_delete)
 
+    def get_foreign_field_add_column_query(self, field, reference, on_delete=''):
+        if on_delete != '':
+            on_delete = ' ON DELETE %s' % on_delete.upper()
+        if type(DbObject) == type(reference):
+            reference = reference.tablename
+        query = 'ALTER TABLE %s ADD COLUMN %s INTEGER' % (field. reference.lower())
+        return query + ';' + 'ALTER TABLE %%s ADD CONSTRAINT %s FOREIGN KEY(%s) REFERENCES"%s"(id)%s' % (reference.lower(), reference.lower(), field.fieldname, on_delete)
+
     def get_byte_field_field_create_query(self, field):
         return '%s BYTEA'
 
