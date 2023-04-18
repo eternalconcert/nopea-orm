@@ -117,5 +117,7 @@ class DbObject(metaclass=MetaType):
             field = getattr(self, name)
             if isinstance(field, DbObject):
                 field = field.to_dict()
+            if isinstance(field, ReverseLazy):
+                field = field.value
             result[name] = field
         return result
