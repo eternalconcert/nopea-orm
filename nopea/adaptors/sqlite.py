@@ -301,3 +301,9 @@ class SQLiteAdaptor(object):
     def insert_migration(self, name):
         query = "INSERT INTO nopea_migrations (name) VALUES (?)"
         return self.execute_query(query, (name,))
+
+    def convert_db_date_to_date(self, value):
+        if value:
+            '2024-10-17 21:58:14.216782'
+            return datetime.strptime(value, '%Y-%m-%d %H:%M:%S.%f')
+        return value

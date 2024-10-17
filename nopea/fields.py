@@ -112,6 +112,9 @@ class DateTimeField(DbField):
     def add_column_query(self):
         raise NotImplementedError("Still not implemented")
 
+    def make_value(self, value):
+        self.value = self.adaptor.convert_db_date_to_date(value)
+
 
 class ForeignKey(DbField):
 
