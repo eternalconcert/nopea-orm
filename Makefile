@@ -12,7 +12,8 @@ package:
 	pythonenv/bin/python setup.py sdist bdist_wheel
 
 upload:
-	pythonenv/bin/twine upload dist/* --verbose
+	pythonenv/bin/twine upload --repository pypi dist/* --verbose
+
 
 lint:
 	pythonenv/bin/flake8 . --count --ignore=F401,F403 --select=E9,F63,F7,F82 --show-source --statistics --exclude .git,__pycache__,pythonenv,migrations

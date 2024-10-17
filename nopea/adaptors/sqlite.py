@@ -283,8 +283,8 @@ class SQLiteAdaptor(object):
             reference = reference.tablename
         return 'FOREIGN KEY(%%s) REFERENCES "%s"(id)%s' % (reference, on_delete)
 
-    def get_byte_field_field_create_query(self):
-        raise NotImplementedError("Currently only for Postgres implemented")
+    def get_byte_field_field_create_query(self, field):
+        return '%s BLOB'
 
     def get_byte_field_create_column_query(self):
         raise NotImplementedError("Currently only for Postgres implemented")
