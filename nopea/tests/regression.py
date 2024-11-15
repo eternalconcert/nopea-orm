@@ -508,16 +508,17 @@ class TestMethods(unittest.TestCase):
     def test_validate_migration_file_content(self):
         with MigrationContext() as migration:
             migration_file = os.listdir(migration.migration_dir)[0]
-            old_state, actions, new_state, callables = migration.get_content_from_migration_file(migration_file)
+            old_state, actions, new_state, pre_actions, post_actions = migration.get_content_from_migration_file(migration_file)
             self.assertIsInstance(old_state, dict)
             self.assertIsInstance(actions, dict)
             self.assertIsInstance(new_state, dict)
-            self.assertIsInstance(callables, list)
+            self.assertIsInstance(pre_actions, list)
+            self.assertIsInstance(post_actions, list)
 
     def test_validate_migration_file_content_actions(self):
         with MigrationContext() as migration:
             migration_file = os.listdir(migration.migration_dir)[0]
-            old_state, actions, new_state, callables = migration.get_content_from_migration_file(migration_file)
+            old_state, actions, new_state, pre_actions = migration.get_content_from_migration_file(migration_file)
             self.assertEqual(old_state, {})
             self.assertEqual(set(actions['creations'].keys()), set(['Bus', 'Car', 'Driver', 'Seller']))
             self.assertEqual(new_state.keys(), set(['Bus', 'Car', 'Driver', 'Seller']))

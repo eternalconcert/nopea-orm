@@ -121,7 +121,8 @@ class Migration:
     def get_content_from_migration_file(self, migration_file):
         old_state = {}
         actions = {}
-        callables = []
+        pre_actions = []
+        post_actions = []
         new_state = {}
         if migration_file:
             content = importlib.import_module(migration_file.split('.')[0])
@@ -137,11 +138,15 @@ class Migration:
                 pass
                 new_state = content.new_state
             try:
-                callables = content.callables
+                pre_actions = content.pre_actions
+            except AttributeError:
+                pass
+            try:
+                post_actions = content.post_actions
             except AttributeError:
                 pass
 
-        return (old_state, actions, new_state, callables)
+        return (old_state, actions, new_state, pre_actions, post_actions)
 
     def create_migrations(self):
         timestamp = datetime.strftime(datetime.now(), '%Y%m%d_%H%M%S')
@@ -245,7 +250,10 @@ class Migration:
             print("Nothing to migrate")
         for migration_file in migrations_to_run:
             print("Running migration: %s" % migration_file)
-            old_state, actions, new_state, callables = self.get_content_from_migration_file(migration_file)
+            old_state, actions, new_state, pre_actions, post_actions = self.get_content_from_migration_file(migration_file)
+
+            for pre_action in pre_actions:
+                pre_action()
 
             for creation in actions.get('creations', {}).items():
                 self.create_table(creation[1])
@@ -259,7 +267,7 @@ class Migration:
             for field_deletion in actions.get('fields_to_remove', {}).items():
                 self.drop_fields(field_deletion[0], field_deletion[1], old_state)
 
-            for func in callables:
-                func()
+            for post_action in post_actions:
+                post_action()
 
             self.adaptor.insert_migration(migration_file)
