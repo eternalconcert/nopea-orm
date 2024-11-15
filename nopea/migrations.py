@@ -153,7 +153,7 @@ class Migration:
         existing_migration_files = self.get_existing_migration_files()
         last_migration_number = len(existing_migration_files)
         last_migration = self.get_last_migration(existing_migration_files)
-        _, _, new_state, _ = self.get_content_from_migration_file(last_migration)
+        _, _, new_state, _, _ = self.get_content_from_migration_file(last_migration)
         old_state = new_state
 
         migration_file_path = os.path.join(
