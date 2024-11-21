@@ -3,6 +3,7 @@
 
 import MySQLdb
 
+from datetime import datetime
 from nopea.dbobject import DbObject
 from nopea.fields import ForeignKey
 
@@ -277,3 +278,6 @@ class MySQLAdaptor(object):
     def insert_migration(self, name):
         query = "INSERT INTO nopea_migrations (name) VALUES (%s)"
         return self.execute_query(query, (name,))
+
+    def convert_db_date_to_date(self, value):
+        return value
