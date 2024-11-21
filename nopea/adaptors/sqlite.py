@@ -142,7 +142,7 @@ class SQLiteAdaptor(object):
         settings = ''
         for field in base.fields:
             value = update_partial.get(field.fieldname)
-            if not value:
+            if value is None:
                 pass
             else:
                 values.append(value)
@@ -306,3 +306,7 @@ class SQLiteAdaptor(object):
         if value:
             return datetime.strptime(value, '%Y-%m-%d %H:%M:%S.%f')
         return value
+
+    def amend_boolean_value(self, value):
+        # sqlite returns 1 | 0, no real booleans
+        return value != 0

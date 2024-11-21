@@ -99,6 +99,10 @@ class BooleanField(DbField):
         return self.adaptor.get_boolean_field_create_column_query(self)
 
 
+    def make_value(self, value):
+        self.value = self.adaptor.amend_boolean_value(value)
+
+
 class DateTimeField(DbField):
 
     def __init__(self, default=None):

@@ -281,3 +281,7 @@ class MySQLAdaptor(object):
 
     def convert_db_date_to_date(self, value):
         return value
+
+    def amend_boolean_value(self, value):
+        # todo: check if a real boolean is provided by db
+        return value
