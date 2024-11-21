@@ -45,6 +45,8 @@ class SQLiteAdaptor(object):
 
     def get_filter_query(self, filter_partial):
         key, value = list(filter_partial.items())[0]
+        if (isinstance(value, bool)):
+            value = 0 if value == False else 1
         if key.endswith('__in'):
             query = ('%s IN (%s)' % (key.replace('__in', ''), ', '.join('?' * len(value))))
         elif key.endswith('__lt'):
@@ -72,6 +74,8 @@ class SQLiteAdaptor(object):
 
     def get_exclude_query(self, exclude_partial):
         key, value = list(exclude_partial.items())[0]
+        if (isinstance(value, bool)):
+            value = 0 if value == False else 1
         if key.endswith('__in'):
             query = ('%s NOT IN (%s)' % (key.replace('__in', ''), ', '.join('?' * len(value))))
         elif key.endswith('__lt'):
